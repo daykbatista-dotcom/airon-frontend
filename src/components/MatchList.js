@@ -153,15 +153,14 @@ const h2h = match.h2h || {};
                   <div className="absolute top-0 right-0 p-1 bg-emerald-500/10 rounded-bl text-[9px] font-mono text-emerald-400 uppercase tracking-tight">
                     AI Engine
                   </div>
-                  <h4 className="text-xs font-bold text-emerald-400 mb-1.5 flex items-center gap-1">
+                                    <h4 className="text-xs font-bold text-emerald-400 mb-1.5 flex items-center gap-1">
                     🤖 Análisis Predictivo Automatizado
                   </h4>
-                  <p className="text-xs text-gray-300 leading-relaxed font-normal">
-                    {pred.aiAnalysis || pred.commentary || match.commentary || 
-                      `El modelo proyecta un claro patrón estadístico para este encuentro. La alta densidad de probabilidad en la distribución de Poisson se concentra en el mercado de goles, sugiriendo un juego táctico con dominio en el mediocampo. Recomendamos monitorear las transiciones en vivo.`
-                    }
+                  <p className="text-xs text-amber-400 font-mono leading-relaxed break-all">
+                    {JSON.stringify(match)}
                   </p>
                 </div>
+
 
               </div>
             )}
