@@ -19,11 +19,13 @@ export default function MatchList({ matches = [] }) {
         const isFinished = match.status === 'FINISHED';
         
         // Extracción segura de datos predictivos del backend
-        const pred = match.prediction || {};
-        const poisson = match.poisson || pred.poisson || {};
-        const monteCarlo = match.monteCarlo || pred.monteCarlo || {};
-        const overUnder = match.overUnder || pred.overUnder || {};
-        const h2h = match.h2h || {};
+console.log("Estructura de un partido:", match);
+const pred = match.prediction || match.predict || match.pronostico || {};
+const poisson = match.poisson || pred.poisson || match.poissonDistribution || {};
+const monteCarlo = match.monteCarlo || pred.monteCarlo || match.monteCarloSimulation || {};
+const overUnder = match.overUnder || pred.overUnder || match.golesOverUnder || {};
+const h2h = match.h2h || {};
+
 
         return (
           <div 
