@@ -19,12 +19,16 @@ export default function MatchList({ matches = [] }) {
         const isFinished = match.status === 'FINISHED';
         
         // Extracción segura de datos predictivos del backend
-console.log("Estructura de un partido:", match);
-const pred = match.prediction || match.predict || match.pronostico || {};
-const poisson = match.poisson || pred.poisson || match.poissonDistribution || {};
-const monteCarlo = match.monteCarlo || pred.monteCarlo || match.monteCarloSimulation || {};
-const overUnder = match.overUnder || pred.overUnder || match.golesOverUnder || {};
+const pred = match.prediction || {};
+const poisson = match._analyzed || {};
+const monteCarlo = match._analyzed || {};
+const overUnder = match._analyzed || {};
 const h2h = match.h2h || {};
+
+// Truco extra: mapear el marcador esperado usando los xG reales del backend
+if (match._analyzed && match._analyzed.xGHome) {
+  pred.expectedScore = `${match._analyzed.xGHome.toFixed(1)} - ${match._analyzed.xGAway?.toFixed(1)}`;
+}
 
 
         return (
@@ -153,13 +157,14 @@ const h2h = match.h2h || {};
                   <div className="absolute top-0 right-0 p-1 bg-emerald-500/10 rounded-bl text-[9px] font-mono text-emerald-400 uppercase tracking-tight">
                     AI Engine
                   </div>
-                                    <h4 className="text-xs font-bold text-emerald-400 mb-1.5 flex items-center gap-1">
+                                                      <h4 className="text-xs font-bold text-emerald-400 mb-1.5 flex items-center gap-1">
                     🤖 Análisis Predictivo Automatizado
                   </h4>
-                  <p className="text-xs text-amber-400 font-mono leading-relaxed break-all">
-                    {JSON.stringify(match)}
+                  <p className="text-xs text-gray-300 leading-relaxed font-normal whitespace-pre-line">
+                    {match.pronosticoIA || `El modelo proyecta un claro patrón estadístico para este encuentro.`}
                   </p>
                 </div>
+
 
 
               </div>
