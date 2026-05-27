@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import RecommendedBets from "./components/RecommendedBets";
 import MatchList from "./components/MatchList";
 import PredictionModal from "./components/PredictionModal";
+import Pronosticos from "./components/Pronosticos";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
@@ -28,7 +29,6 @@ function formatDisplayDate(dateStr) {
   });
 }
 
-// ─── NAV ICONS ────────────────────────────────────────────────────────────────
 const Icons = {
   matches: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -65,7 +65,6 @@ const Icons = {
   ),
 };
 
-// ─── BOTTOM NAV ───────────────────────────────────────────────────────────────
 function BottomNav({ active, onChange }) {
   const tabs = [
     { id: "partidos",    label: "Partidos",    icon: Icons.matches },
@@ -130,7 +129,6 @@ function BottomNav({ active, onChange }) {
   );
 }
 
-// ─── TOP HEADER ───────────────────────────────────────────────────────────────
 function Header({ date, onDateChange, totalMatches, loading, activeTab }) {
   const tabTitles = {
     partidos:    "Partidos del Día",
@@ -148,7 +146,6 @@ function Header({ date, onDateChange, totalMatches, loading, activeTab }) {
       borderBottom: "1px solid rgba(51,65,85,0.4)",
       backdropFilter: "blur(16px)",
     }}>
-      {/* Logo strip */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "10px 16px 0",
@@ -176,22 +173,16 @@ function Header({ date, onDateChange, totalMatches, loading, activeTab }) {
             </div>
           </div>
         </div>
-
-        {/* Stats chips */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{
-            background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)",
-            borderRadius: 20, padding: "3px 10px", display: "flex", alignItems: "center", gap: 5,
-          }}>
-            <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#34d399", boxShadow: "0 0 6px #34d399" }}/>
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#34d399", fontFamily: "monospace" }}>
-              {loading ? "—" : totalMatches} partidos
-            </span>
-          </div>
+        <div style={{
+          background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.2)",
+          borderRadius: 20, padding: "3px 10px", display: "flex", alignItems: "center", gap: 5,
+        }}>
+          <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#34d399", boxShadow: "0 0 6px #34d399" }}/>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "#34d399", fontFamily: "monospace" }}>
+            {loading ? "—" : totalMatches} partidos
+          </span>
         </div>
       </div>
-
-      {/* Date + page title row */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "8px 16px 10px",
@@ -219,10 +210,7 @@ function Header({ date, onDateChange, totalMatches, loading, activeTab }) {
   );
 }
 
-// ─── ERROR BANNER ─────────────────────────────────────────────────────────────
 function ErrorBanner({ error, onRetry }) {
-  const isRateLimit = error?.includes("429") || error?.includes("rate limit");
-  const isApiKey    = error?.includes("403") || error?.includes("API key");
   return (
     <div style={{
       margin: "16px", borderRadius: 12, padding: 16,
@@ -231,18 +219,13 @@ function ErrorBanner({ error, onRetry }) {
       <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
         <span style={{ fontSize: 18 }}>⚠️</span>
         <div style={{ flex: 1 }}>
-          <p style={{ color: "#f87171", fontWeight: 600, fontSize: 13, margin: 0 }}>
-            {isRateLimit ? "Límite de API alcanzado" : isApiKey ? "Error de autenticación" : "Error al cargar partidos"}
-          </p>
+          <p style={{ color: "#f87171", fontWeight: 600, fontSize: 13, margin: 0 }}>Error al cargar partidos</p>
           <p style={{ color: "#64748b", fontSize: 11, marginTop: 4 }}>{error}</p>
         </div>
-        <button
-          onClick={onRetry}
-          style={{
-            padding: "6px 14px", borderRadius: 8, border: "1px solid rgba(52,211,153,0.3)",
-            background: "transparent", color: "#34d399", fontSize: 11, fontWeight: 600, cursor: "pointer",
-          }}
-        >
+        <button onClick={onRetry} style={{
+          padding: "6px 14px", borderRadius: 8, border: "1px solid rgba(52,211,153,0.3)",
+          background: "transparent", color: "#34d399", fontSize: 11, fontWeight: 600, cursor: "pointer",
+        }}>
           Reintentar
         </button>
       </div>
@@ -250,7 +233,6 @@ function ErrorBanner({ error, onRetry }) {
   );
 }
 
-// ─── PLACEHOLDER TABS ─────────────────────────────────────────────────────────
 function PlaceholderTab({ icon, title, subtitle }) {
   return (
     <div style={{
@@ -281,7 +263,6 @@ function PlaceholderTab({ icon, title, subtitle }) {
   );
 }
 
-// ─── BACKGROUND ───────────────────────────────────────────────────────────────
 function Background() {
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
@@ -302,13 +283,12 @@ function Background() {
   );
 }
 
-// ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const [activeTab, setActiveTab]       = useState("partidos");
-  const [date, setDate]                 = useState(toLocalDateString(new Date()));
-  const [data, setData]                 = useState(null);
-  const [loading, setLoading]           = useState(false);
-  const [error, setError]               = useState(null);
+  const [activeTab, setActiveTab]         = useState("partidos");
+  const [date, setDate]                   = useState(toLocalDateString(new Date()));
+  const [data, setData]                   = useState(null);
+  const [loading, setLoading]             = useState(false);
+  const [error, setError]                 = useState(null);
   const [selectedMatch, setSelectedMatch] = useState(null);
 
   const loadMatches = useCallback(async (targetDate) => {
@@ -336,18 +316,10 @@ export default function App() {
           <>
             {error && !loading && <ErrorBanner error={error} onRetry={() => loadMatches(date)} />}
             {(!error || data) && (
-              <RecommendedBets
-                valueBets={data?.valueBets || []}
-                onAnalyze={handleAnalyze}
-                loading={loading}
-              />
+              <RecommendedBets valueBets={data?.valueBets || []} onAnalyze={handleAnalyze} loading={loading} />
             )}
             {(!error || data) && (
-              <MatchList
-                matches={data?.matches || []}
-                loading={loading}
-                onAnalyze={handleAnalyze}
-              />
+              <MatchList matches={data?.matches || []} loading={loading} onAnalyze={handleAnalyze} />
             )}
             {!loading && !error && data && (data.total === 0 || data.matches?.length === 0) && (
               <div style={{ textAlign: "center", padding: "60px 32px", color: "#475569" }}>
@@ -359,7 +331,9 @@ export default function App() {
           </>
         );
       case "pronosticos":
-        return <PlaceholderTab icon="📈" title="Pronósticos" subtitle="Análisis predictivo avanzado por liga y equipo" />;
+        return (
+          <Pronosticos matches={data?.matches || []} loading={loading} />
+        );
       case "favoritos":
         return <PlaceholderTab icon="⭐" title="Mis Favoritos" subtitle="Guarda los partidos que más te interesan" />;
       case "filtro":
@@ -376,7 +350,6 @@ export default function App() {
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", minHeight: "100vh", background: "#060a13" }}>
       <Background />
-
       <div style={{ position: "relative", zIndex: 10 }}>
         <Header
           date={date}
@@ -385,36 +358,25 @@ export default function App() {
           loading={loading}
           activeTab={activeTab}
         />
-
-        {/* Content — padding bottom so nav doesn't cover content */}
         <main style={{ padding: "12px 0 90px" }}>
           {renderContent()}
         </main>
-
-        {/* Footer (only on partidos tab) */}
         {activeTab === "partidos" && (
           <footer style={{
             borderTop: "1px solid rgba(51,65,85,0.3)", padding: "16px",
             marginBottom: 80, textAlign: "center",
           }}>
-            <p style={{ fontSize: 10, color: "#334155", margin: 0, letterSpacing: "0.05em" }}>
+            <p style={{ fontSize: 10, color: "#334155", margin: 0 }}>
               AIRON-PRONO — Motor predictivo Poisson + Monte Carlo ·{" "}
               <a href="https://www.football-data.org" target="_blank" rel="noreferrer" style={{ color: "#475569" }}>
                 football-data.org
               </a>
             </p>
-            <p style={{ fontSize: 10, color: "#1e293b", marginTop: 4 }}>
-              Las predicciones son herramientas estadísticas, no consejos de apuesta.
-            </p>
           </footer>
         )}
       </div>
-
       <BottomNav active={activeTab} onChange={setActiveTab} />
-
-      {selectedMatch && (
-        <PredictionModal match={selectedMatch} onClose={handleCloseModal} />
-      )}
+      {selectedMatch && <PredictionModal match={selectedMatch} onClose={handleCloseModal} />}
     </div>
   );
 }
